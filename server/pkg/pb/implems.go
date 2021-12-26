@@ -13,8 +13,8 @@ type StorageService struct {
 	UnimplementedKVStorageServiceServer
 }
 
-func NewStorageService(logger *logrus.Logger) *StorageService {
-	s := storage.NewInMemoryKeyValueStorage(300)
+func NewStorageService(logger *logrus.Logger, capacity int) *StorageService {
+	s := storage.NewInMemoryKeyValueStorage(capacity)
 
 	return &StorageService{
 		storage: s,

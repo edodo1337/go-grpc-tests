@@ -10,6 +10,8 @@ import (
 	"google.golang.org/grpc"
 )
 
+const StorageCapacity = 1000
+
 type App struct {
 	serviceServer *pb.StorageService
 	grpcServer    *grpc.Server
@@ -21,7 +23,7 @@ func NewApp() *App {
 	logger := logrus.New()
 
 	return &App{
-		serviceServer: pb.NewStorageService(logger),
+		serviceServer: pb.NewStorageService(logger, StorageCapacity),
 		Port:          9000,
 		logger:        logger,
 	}

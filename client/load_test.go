@@ -16,7 +16,8 @@ import (
 
 const (
 	CLIENTS_COUNT = 5000
-	KEY_RANGE     = 150
+	KEY_RANGE     = 15000
+	LOOPS_COUNT   = 5
 )
 
 var responseCount int32
@@ -123,6 +124,8 @@ func TestLoad(t *testing.T) {
 	// addr := flag.String("addr", "localhost:9000", "the address to connect to")
 	addr := "localhost:9000"
 
+	start := time.Now()
+
 	var clients []*Client
 	var wg sync.WaitGroup
 
@@ -131,13 +134,16 @@ func TestLoad(t *testing.T) {
 		clients = append(clients, c)
 	}
 
-	wg.Add(CLIENTS_COUNT)
-	for i := 0; i < CLIENTS_COUNT; i++ {
-		go clients[i].RandomOperation(&wg)
-		// time.Sleep(1 * time.Millisecond)
+	for j := 0; j < LOOPS_COUNT; j++ {
+		wg.Add(CLIENTS_COUNT)
+		for i := 0; i < CLIENTS_COUNT; i++ {
+			go clients[i].RandomOperation(&wg)
+			// time.Sleep(1 * time.Millisecond)
+		}
+
+		wg.Wait()
 	}
 
-	wg.Wait()
-
-	t.Error("?Hello", responseCount)
+	duration := time.Since(start)
+	t.Error("?Hello", responseCount, duration, float32(duration)/float32(responseCount))
 }
